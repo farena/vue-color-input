@@ -708,16 +708,16 @@ const isSameNodeRecursive = (elA, elB) => {
 };
 
 var script = /*#__PURE__*/defineComponent({
-  name: 'ColorInput',
+  name: "ColorInput",
   props: {
     modelValue: [String, Object],
     position: {
       type: String,
-      default: 'bottom'
+      default: "bottom"
     },
     transition: {
       type: String,
-      default: 'picker-popup'
+      default: "picker-popup"
     },
     disableAlpha: {
       type: Boolean,
@@ -734,7 +734,7 @@ var script = /*#__PURE__*/defineComponent({
     format: String,
     appendTo: [String, HTMLElement]
   },
-  emits: ['mounted', 'beforeUnmount', 'update:modelValue', 'pickStart', 'pickEnd', 'hueInputStart', 'hueInputEnd', 'hueInput', 'alphaInputStart', 'alphaInputEnd', 'alphaInput', 'saturationInputStart', 'saturationInputEnd', 'saturationInput', 'change'],
+  emits: ["mounted", "beforeUnmount", "update:modelValue", "pickStart", "pickEnd", "hueInputStart", "hueInputEnd", "hueInput", "alphaInputStart", "alphaInputEnd", "alphaInput", "saturationInputStart", "saturationInputEnd", "saturationInput", "change"],
   components: {
     ColorPicker: script$1
   },
@@ -751,8 +751,8 @@ var script = /*#__PURE__*/defineComponent({
       parent: null,
       boxRect: {},
       innerBoxRect: {},
-      textInputsFormat: 'rgb',
-      originalFormat: 'rgb',
+      textInputsFormat: "rgb",
+      originalFormat: "rgb",
       originalType: null
     };
   },
@@ -766,40 +766,40 @@ var script = /*#__PURE__*/defineComponent({
 
     processedPosition() {
       // array of all valid position combination
-      const values = ['top', 'right', 'bottom', 'left', 'center'];
+      const values = ["top", "right", "bottom", "left", "center"];
       const conflicts = {
-        top: 'bottom',
-        right: 'left',
-        bottom: 'top',
-        left: 'right'
+        top: "bottom",
+        right: "left",
+        bottom: "top",
+        left: "right"
       };
       const combinations = values.slice(0, 4).flatMap((v, i) => values.map(q => {
         if (conflicts[v] === q) return false;
-        return v === q ? v : v + ' ' + q;
+        return v === q ? v : v + " " + q;
       })).filter(v => v);
       let position = this.position.toLowerCase(); // allow 'bOtToM RiGHt'
 
       if (!combinations.includes(position)) {
         if (position) {
           // position is defined but invalid
-          console.warn('[vue-color-input]: invalid position -> ' + position);
+          console.warn("[vue-color-input]: invalid position -> " + position);
         }
 
-        position = 'bottom center';
+        position = "bottom center";
       }
 
-      position = position.split(' ');
-      position[1] = position[1] || 'center';
+      position = position.split(" ");
+      position[1] = position[1] || "center";
       return position;
     },
 
     processedFormat() {
-      let formats = ['rgb', 'hsv', 'hsl'];
+      let formats = ["rgb", "hsv", "hsl"];
       formats = formats.concat(formats.flatMap(f => {
-        return [f + ' object', 'object ' + f, f + ' string', 'string ' + f];
+        return [f + " object", "object " + f, f + " string", "string " + f];
       }));
-      formats = formats.concat(['name', 'hex', 'hex8'].flatMap(f => {
-        return [f, f + ' string', 'string ' + f];
+      formats = formats.concat(["name", "hex", "hex8"].flatMap(f => {
+        return [f, f + " string", "string " + f];
       })); // validate and fallback to default
 
       let format = this.format;
@@ -811,7 +811,7 @@ var script = /*#__PURE__*/defineComponent({
 
         if (!formats.includes(format)) {
           // format is defined but invalid
-          console.warn('[vue-color-input]: invalid format -> ' + format);
+          console.warn("[vue-color-input]: invalid format -> " + format);
           format = this.originalFormat;
         } else {
           // user-defined format is valid
@@ -823,12 +823,12 @@ var script = /*#__PURE__*/defineComponent({
       } // extract type and format separately
 
 
-      format = format.split(' ');
-      let type = format.findIndex(f => ['string', 'object'].includes(f));
+      format = format.split(" ");
+      let type = format.findIndex(f => ["string", "object"].includes(f));
 
       if (type < 0) {
         // type not specified use type from input
-        type = ['rgb', 'hsv', 'hsl'].includes(format[0]) ? this.originalType : 'string';
+        type = ["rgb", "hsv", "hsl"].includes(format[0]) ? this.originalType : "string";
       } else {
         // type specified
         type = format.splice(type, 1)[0];
@@ -845,7 +845,7 @@ var script = /*#__PURE__*/defineComponent({
     processedDisableAlpha() {
       const format = this.processedFormat;
 
-      if (format.force && ['hex', 'name'].includes(format.format)) {
+      if (format.force && ["hex", "name"].includes(format.format)) {
         return true;
       } else {
         return this.disableAlpha;
@@ -863,15 +863,15 @@ var script = /*#__PURE__*/defineComponent({
 
       this.hidePicker = true;
       this.$refs.picker.init();
-      document.body.addEventListener('pointerdown', this.pickEnd);
-      this.$emit('pickStart');
+      document.body.addEventListener("pointerdown", this.pickEnd);
+      this.$emit("pickStart");
     },
 
     pickEnd(e) {
       if (!this.active || e && isSameNodeRecursive(e.target, this.$refs.picker.$refs.pickerRoot)) return;
-      document.body.removeEventListener('pointerdown', this.pickEnd);
+      document.body.removeEventListener("pointerdown", this.pickEnd);
       this.active = false;
-      this.$emit('pickEnd');
+      this.$emit("pickEnd");
     },
 
     init() {
@@ -879,16 +879,16 @@ var script = /*#__PURE__*/defineComponent({
       this.color = tinycolor(this.modelValue); // original format (this is the format modelValue will be converted to)
 
       let format = this.color.getFormat();
-      this.originalFormat = format ? format : 'rgb';
+      this.originalFormat = format ? format : "rgb";
       let type = typeof this.modelValue;
-      this.originalType = ['string', 'object'].includes(type) ? type : 'string';
+      this.originalType = ["string", "object"].includes(type) ? type : "string";
       this.processedFormat; // trigger computed processedFormat()
       // for storing output value (to react to external modelValue changes)
 
       this.output = null; // warn of invalid color
 
       if (!this.color.isValid()) {
-        console.warn('[vue-color-input]: invalid color -> ' + this.color.getOriginalInput());
+        console.warn("[vue-color-input]: invalid color -> " + this.color.getOriginalInput());
       }
     },
 
@@ -897,31 +897,31 @@ var script = /*#__PURE__*/defineComponent({
       if (hsv) this.color = tinycolor(hsv);
       let format = this.processedFormat.format;
 
-      if (this.color.getAlpha() < 1 && ['hex', 'name'].includes(format)) {
+      if (this.color.getAlpha() < 1 && ["hex", "name"].includes(format)) {
         // alpha < 1 but output format lacks alpha channel
         if (this.processedFormat.force) {
           // format is user defined, output it anyway
           this.color.setAlpha(1);
         } else {
           // format is calculate from input, output rgb instead
-          format = 'rgb';
+          format = "rgb";
         }
       }
 
-      if (this.processedFormat.type === 'object') {
-        this.output = this.color['to' + format.charAt(0).toUpperCase() + format.slice(1)]();
+      if (this.processedFormat.type === "object") {
+        this.output = this.color["to" + format.charAt(0).toUpperCase() + format.slice(1)]();
       } else {
         this.output = this.color.toString(format);
       }
 
-      this.$emit('update:modelValue', this.output);
+      this.$emit("update:modelValue", this.output);
     },
 
     getParent() {
       let parent;
 
       if (this.appendTo) {
-        if (typeof this.appendTo === 'string') {
+        if (typeof this.appendTo === "string") {
           parent = document.querySelector(this.appendTo);
         } else {
           parent = this.appendTo;
@@ -929,7 +929,6 @@ var script = /*#__PURE__*/defineComponent({
       }
 
       this.parent = parent || this.$refs.root;
-      console.log(this.parent);
     },
 
     getBoxRect() {
@@ -941,24 +940,24 @@ var script = /*#__PURE__*/defineComponent({
   created() {
     this.init();
     this.cssVars = {
-      '--transparent-pattern': 'url(' + transparentPattern + ')'
+      "--transparent-pattern": "url(" + transparentPattern + ")"
     };
   },
 
   mounted() {
     this.getParent();
-    this.$emit('mounted');
+    this.$emit("mounted");
   },
 
   beforeUnmount() {
     this.pickEnd();
-    this.$emit('beforeUnmount');
+    this.$emit("beforeUnmount");
   },
 
   watch: {
     modelValue() {
-      let input = typeof this.modelValue === 'object' ? JSON.stringify(this.modelValue) : this.modelValue;
-      let output = typeof this.output === 'object' ? JSON.stringify(this.output) : this.output;
+      let input = typeof this.modelValue === "object" ? JSON.stringify(this.modelValue) : this.modelValue;
+      let output = typeof this.output === "object" ? JSON.stringify(this.output) : this.output;
 
       if (input !== output) {
         // modelValue updated from elsewhere
